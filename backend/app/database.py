@@ -1,7 +1,8 @@
+from collections.abc import Generator
 from pathlib import Path
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 
 DATABASE_FILE = Path(__file__).resolve().parent.parent / "tictactoe.db"
@@ -21,3 +22,12 @@ SessionLocal = sessionmaker(
 
 class Base(DeclarativeBase):
     pass
+
+
+def get_db() -> Generator[Session, None, None]:
+    database = SessionLocal()
+
+    try:
+        yield database
+    finally:
+        database.close()
